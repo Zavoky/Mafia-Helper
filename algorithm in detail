@@ -1,0 +1,16 @@
+gameRoleList[gameRole] = role list set by the game
+playerRoleList[playerRole] = player roles given by user
+roleMatches[playerRole] = lists each game role a player role can occupy
+containers[gameRole] = lists game role occupancy, container1 = gamerole1
+
+gameRoleList is filled
+playerRoleList recieves a role
+Search for a match for that role
+Matching game roles are placed in their corresponding role in roleMatches
+Player role gets placed in respective container
+playerRoleList recieves a role
+Search for match, only one matching game role is found
+Container for that game role is filled
+Check roleMatches[that playerRole in that game role] for another game role
+Transfer that playerRole to it's respective game role container
+Role gets placed in respective container
