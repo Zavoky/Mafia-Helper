@@ -7,71 +7,76 @@ if (document.readyState !== 'loading') {
 function ready() {
 
   function submitRoleList() {
-    const roleList = document.getElementsByClassName('roleList');
-    let roleListArray = [];
+    const roleListDOM = document.getElementsByClassName('roleList');
+    let roleList = [];
 
-    for (let i = 0; i < roleList.length; i++) {
-      roleListArray[i] = roleList[i].value.toLowerCase();
-      roleList[i].style.color = 'black';
+    for (let i = 0; i < roleListDOM.length; i++) {
+      roleList[i] = roleListDOM[i].value.toLowerCase();
+
+      // reset anything done by focusError()
+      roleListDOM[i].style.color = 'black';
     }
-
-    if (!verifyRoleList(roleListArray, roleCategories, roleList)) {
-      console.log('Input not valid');
+    if (!verifyList(roleList, roleListDOM, roleCategories)) {
+      console.log('Role list is not valid');
       return;
     }
-    assignRoles(roleListArray);
+
+    assignRoles(roleList);
     playerListSubmit.addEventListener('click', matchSearch);
   }
 
   function submitPlayerList() {
-    const playerList = document.getElementsByClassName('playerList');
-    let playerListArray = [];
+    const playerListDOM = document.getElementsByClassName('playerList');
+    let playerList = [];
 
-    for (let i = 0; i < playerList.length; i++) {
-      playerListArray[i] = playerList[i].value.toLowerCase();
-      playerList[i].style.color = 'black';
+    for (let i = 0; i < playerListDOM.length; i++) {
+      playerList[i] = playerListDOM[i].value.toLowerCase();
+
+      // reset anything done by focusError() / highlightCollisions()
+      playerListDOM[i].style.color = 'black';
     }
 
-    if (!verifyPlayerList(playerListArray, allRolesArray, playerList)) {
+    if (!verifyList(playerList, playerListDOM, rolesArray)) {
       console.log('Input not valid');
       return;
     }
 
     const keys = Object.keys(playerRoleList);
-    for (let i = 0; i < playerListArray.length; i++) {
-      playerRoleList[keys[i]] = playerListArray[i];
+    for (let i = 0; i < playerList.length; i++) {
+      playerRoleList[keys[i]] = playerList[i];
     }
   }
 
+  // game categories change into respective game roles
   function assignRoles(list) {
-    const categories = Object.keys(roleCategories);
-    const keys = Object.keys(gameRoleList);
+    for (let i in gameRoleList) {
+      gameRoleList[i] = [];
+    }
+
+    const gameRoles = Object.keys(gameRoleList);
 
     for (let i = 0; i < list.length; i++) {
-      for (let j = 0; j < categories.length; j++) {
-        if (list[i] === categories[j]) {
-          let category = categories[j];
-          let roles = roleCategories[category];
-
+      for (let j in roleCategories) {
+        if (list[i] === j) {
+          let roles = roleCategories[j];
           for (let k = 0; k < roles.length; k++) {
-            gameRoleList[keys[i]].push(roles[k]);
+            gameRoleList[gameRoles[i]].push(roles[k]);
           }
-          break;
         }
       }
     }
   }
 
-  function verifyRoleList(roleListArray, verifyArray, roleList) {
-    const categories = Object.keys(roleCategories);
-
-    for (let i = 0; i < roleListArray.length; i++) {
-      for (let j = 0; j < categories.length; j++) {
-        if (roleListArray[i] === categories[j]) {
+  function verifyList(list, listDOM, checkArray) {
+    if (checkArray === roleCategories) {
+      checkArray = Object.keys(roleCategories);
+    }
+    for (let i = 0; i < list.length; i++) {
+      for (let j = 0; j < checkArray.length; j++) {
+        if (list[i] === '' || list[i] === checkArray[j]) {
           break;
-        }
-        else if (j === categories.length-1) {
-          focusError(i, roleList);
+        } else if (j === checkArray.length-1) {
+          focusError(i, listDOM);
           return false;
         }
       }
@@ -79,21 +84,7 @@ function ready() {
     return true;
   }
 
-  function verifyPlayerList(playerListArray, verifyArray, playerList) {
-    for (let i = 0; i < playerListArray.length; i++) {
-      for (let j = 0; j < verifyArray.length; j++) {
-        if (playerListArray[i] === '' ||
-            playerListArray[i] === verifyArray[j]) {
-          break;
-        } else if (j === verifyArray.length-1) {
-          focusError(i, playerList);
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
+  // focuses on spelling errors
   function focusError(index, list) {
     list[index].focus();
     list[index].style.color = 'red';
@@ -101,71 +92,144 @@ function ready() {
   }
 
   function matchSearch() {
-    const playerKeys = Object.keys(playerRoleList);
-    const roleKeys = Object.keys(gameRoleList);
-    const matchKeys = Object.keys(roleMatches);
+    // clear the roleMatches of old information
+    for (let i in roleMatches) {
+      roleMatches[i] = [];
+    }
 
-    // go thru all keys of playerRoleList
-    for (let i = 0; i < playerKeys.length; i++) {
-      let playerRole = playerRoleList[playerKeys[i]];
+    for (let i in playerRoleList) {
+      let playerRole = playerRoleList[i];
 
-      // go thru all keys of gameRoleList
-      for (let j = 0; j < roleKeys.length; j++) {
-        let gameRole = gameRoleList[roleKeys[j]];
+      for (let j in gameRoleList) {
+        let gameRoles = gameRoleList[j];
 
-        // go thru game roles inside gameRoleList[gameRole3]
-        for (let k = 0; k < gameRole.length; k++) {
-
-          // if playerRole is 
-          if (playerRole === gameRole[k]) {
-            roleMatches[matchKeys[i]].push(roleKeys[j]);
+        for (let k = 0; k < gameRoles.length; k++) {
+          if (playerRole === gameRoles[k]) {
+            // roleMatches and playerRoleList share same keys
+            roleMatches[i].push(j)
             break;
           }
         }
       }
     }
-    // for (let i in playerRoleList) {
-    //   let playerRole = playerRoleList[i];
-
-    //   for (let j in gameRoleList) {
-    //     let gameRole = gameRoleList[j];
-
-    //     for (let k = 0; k < gameRole.length; k++) {
-          
-    //       if (playerRole === gameRole[k]) {
-    //        roleMatches[i].push(j)
-    //       }
-    //     }
-    //   }
-    // }
-
-    console.log(roleMatches);
     assignContainers();
   }
 
   function assignContainers() {
-    const matchKeys = Object.keys(roleMatches);
-    const containerKeys = Object.keys(containers);
-    const roleKeys = Object.keys(gameRoleList);
+    // clear past data
+    collisions = [];
+    let collisionCheck = 0;
+    for (let i in containers) {
+      containers[i] = '';
+    }
 
-    // go thru all keys of roleMatches
-    for (let i = 0; i < matchKeys.length; i++) {
-      let gameRole = roleMatches[matchKeys[i]];
+    for (let i in roleMatches) {
+      // go thru game roles that player (i) can be
+      let gameRoles = roleMatches[i];
+      collisions = [];
 
-      // go thru game roles inside roleMatches[playerRole3]
-      for (let j = 0; j < gameRole.length; j++) {
-        // gameRoleList and containers share key names
-        // if the container for that game role is empty
-        if (containers[gameRole[j]] === '') {
-          // that container recieves the player role key (playerRole3)
-          containers[gameRole[j]] =  matchKeys[i];
+      // iterate over those game roles
+      for (let j = 0; j < gameRoles.length; j++) {
+        // check containers for this game role
+        let gameRole = gameRoles[j];      
+
+        // if container is open, player[i] occupies it
+        // else if all containers are occupied...
+        if (containers[gameRole] === '') {
+          containers[gameRole] = i;
           break;
+        } else if (j === gameRoles.length-1) {
+          // ...check containers for possibility of switching containers
+          // also add current player for possible collision
+          collisions.push(i);
+          for (let k = 0; k < gameRoles.length; k++) {
+            let gameRole = gameRoles[k];
+            let occupier = containers[gameRole];
+
+            // if occupier has no where else to go, push to collisions
+            // else we check if it can change containers
+            if (roleMatches[occupier].length === 1) {
+              collisions.push(occupier);
+              let uniqueCollisions = [...new Set(collisions)];
+              console.log('Collision');
+              console.log(uniqueCollisions);
+              highlightCollisions(uniqueCollisions, 'blue');
+            } else {
+              let avoidGameRole = [];
+              avoidGameRole.push(gameRole);
+              if (containerHelper(occupier, avoidGameRole)) {
+                containers[gameRole] = i;
+                collisions = [];
+                // break is okay here, j is at its last iteration
+                break;
+              } else if (k === gameRoles.length-1) {
+                let uniqueCollisions = [...new Set(collisions)];
+                console.log('Collision');
+                console.log(uniqueCollisions);
+                highlightCollisions(uniqueCollisions, 'red');
+              }
+            }
+          }
         }
       }
     }
+
+    console.log(roleMatches);
     console.log(containers);
   }
 
+  // code will be similar to assignContainers(), but with recursion
+  function containerHelper(occupier, gameRoleAvoid) {
+    let gameRoles = roleMatches[occupier];
+    collisions.push(occupier);
+
+    for (let i = 0; i < gameRoles.length; i++) {
+      let gameRole = gameRoles[i];
+
+      // dont want to repeat same role
+      if (gameRoleAvoid.includes(gameRole)) {
+        if (i === gameRoles.length-1) {
+          return false;
+        }
+        continue;
+      } else if (containers[gameRole] === '') { 
+        containers[gameRole] = occupier;
+        return true;
+      } else if (i === gameRoles.length-1) {
+        for (let j = 0; j < gameRoles.length; j++) {
+          let gameRole = gameRoles[j];
+          let occupier2 = containers[gameRole];
+          if (gameRoleAvoid.includes(gameRole)) {
+            if (j === gameRoles.length-1) {
+              return false;
+            }
+            continue;
+          } else if (roleMatches[occupier2].length === 1) {
+            collisions.push(occupier2);
+          } else {
+            avoidGameRole.push(gameRole);
+            if (containerHelper(occupier2, avoidGameRole)) {
+              containers[gameRole] = occupier;
+              return true;
+            } else {
+            return false;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function highlightCollisions(collisions, color) {
+    const playerListDOM = document.getElementsByClassName('playerList');
+
+    for (let i = 0; i < collisions.length; i++) {
+      let collision = collisions[i].substr(10, 12)-1;
+      playerListDOM[collision].style.color = color;
+    }
+  }
+
+  // debugging tool
   function autoFill() {
     const roleList = document.getElementsByClassName('roleList');
     rolelistarr = Array.from(roleList);
@@ -189,6 +253,7 @@ function ready() {
     rolelistarr[14].value = 'Neutral Benign';
   }  
 
+  // debugging tool
   function autoFill2() {
     const playerList = document.getElementsByClassName('playerList');
     rolelistarr = Array.from(playerList);
@@ -212,7 +277,8 @@ function ready() {
     rolelistarr[14].value = 'Jester';
   }
 
-  function createTables() {
+  // creates HTML tables
+  (function () {
     let table = document.createElement('table');
     let placement = document.getElementById('roleListPlacement');
 
@@ -260,15 +326,18 @@ function ready() {
     }
 
     placement.appendChild(table);
-  }
+  }());
 
-  createTables();
   const roleListSubmit = document.getElementById('roleListSubmit');
   const playerListSubmit = document.getElementById('playerListSubmit');
   roleListSubmit.addEventListener('click', submitRoleList);
   playerListSubmit.addEventListener('click', submitPlayerList)
   document.getElementById('autofillButton').addEventListener('click', autoFill);
   document.getElementById('autofillButton2').addEventListener('click', autoFill2);
+
+  let collisions = [];
+
+  let avoidGameRole = [];
 
   const gameRoleList = {
     gameRole1: [],
@@ -342,7 +411,7 @@ function ready() {
     gameRole15: ''
   };
 
-  const allRolesArray = ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
+  const rolesArray = ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
                          'detective', 'doctor', 'escort', 'investigator', 'jailor',
                          'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
                          'sheriff', 'spy', 'veteran', 'vigilante', 'agent',
