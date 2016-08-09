@@ -22,18 +22,22 @@ function ready() {
     }
 
     assignRoles(roleList);
-    playerListSubmit.addEventListener('click', matchSearch);
+    playerListSubmit.addEventListener('click', submitPlayerList);
   }
 
   function submitPlayerList() {
     const playerListDOM = document.getElementsByClassName('playerList');
     let playerList = [];
+    avoidGameRole = [];
+    collisionColors = ['#cc99ff', '#99ff99', '#ffcc99', '#99ccff',
+                       '#66ffff', '#ff99ff', '#ffff99', '#ff9999'];
 
     for (let i = 0; i < playerListDOM.length; i++) {
       playerList[i] = playerListDOM[i].value.toLowerCase();
 
-      // reset anything done by focusError() / highlightCollisions()
+      // reset anything done by focusError() or highlightCollisions()
       playerListDOM[i].style.color = 'black';
+      playerListDOM[i].style.backgroundColor = 'white';
     }
 
     if (!verifyList(playerList, playerListDOM, rolesArray)) {
@@ -45,6 +49,8 @@ function ready() {
     for (let i = 0; i < playerList.length; i++) {
       playerRoleList[keys[i]] = playerList[i];
     }
+
+    matchSearch();
   }
 
   // game categories change into respective game roles
@@ -153,9 +159,9 @@ function ready() {
               let uniqueCollisions = [...new Set(collisions)];
               console.log('Collision');
               console.log(uniqueCollisions);
-              highlightCollisions(uniqueCollisions, 'blue');
+              highlightCollisions(uniqueCollisions);
             } else {
-              let avoidGameRole = [];
+              avoidGameRole = [];
               avoidGameRole.push(gameRole);
               if (containerHelper(occupier, avoidGameRole)) {
                 containers[gameRole] = i;
@@ -166,7 +172,7 @@ function ready() {
                 let uniqueCollisions = [...new Set(collisions)];
                 console.log('Collision');
                 console.log(uniqueCollisions);
-                highlightCollisions(uniqueCollisions, 'red');
+                highlightCollisions(uniqueCollisions);
               }
             }
           }
@@ -220,12 +226,20 @@ function ready() {
     }
   }
 
-  function highlightCollisions(collisions, color) {
+  function highlightCollisions(collisions) {
     const playerListDOM = document.getElementsByClassName('playerList');
+    let collision = collisions[1].substr(10, 12)-1;
+    let color = '';
+
+    if (playerListDOM[collision].style.backgroundColor !== 'white') {
+      color = playerListDOM[collision].style.backgroundColor;
+    } else {
+      color = collisionColors.pop();
+    }
 
     for (let i = 0; i < collisions.length; i++) {
       let collision = collisions[i].substr(10, 12)-1;
-      playerListDOM[collision].style.color = color;
+      playerListDOM[collision].style.backgroundColor = color;
     }
   }
 
@@ -331,10 +345,10 @@ function ready() {
   const roleListSubmit = document.getElementById('roleListSubmit');
   const playerListSubmit = document.getElementById('playerListSubmit');
   roleListSubmit.addEventListener('click', submitRoleList);
-  playerListSubmit.addEventListener('click', submitPlayerList)
   document.getElementById('autofillButton').addEventListener('click', autoFill);
   document.getElementById('autofillButton2').addEventListener('click', autoFill2);
 
+  let collisionColors = [];
   let collisions = [];
 
   let avoidGameRole = [];
