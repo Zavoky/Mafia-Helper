@@ -53,11 +53,28 @@ function ready() {
     matchSearch();
   }
 
+  // fill the checkbox array of roles to avoid
+  function checkboxRolesAssign() {
+    let checkboxes = document.getElementsByClassName('checkboxClass');
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        let number = checkboxes[i].parentElement.id.substr(12, 14);
+        let index = 'gameRole' + number;
+        let checkbox = checkboxes[i].value;
+        console.log(roleCategories[checkbox]);
+        Array.prototype.push.apply(checkboxRoles[index], roleCategories[checkbox]);
+      }
+    }
+  }
+
   // game categories change into respective game roles
   function assignRoles(list) {
     for (let i in gameRoleList) {
       gameRoleList[i] = [];
     }
+    checkboxRolesAssign();
+    console.log(checkboxRoles);
 
     const gameRoles = Object.keys(gameRoleList);
 
@@ -66,7 +83,10 @@ function ready() {
         if (list[i] === j) {
           let roles = roleCategories[j];
           for (let k = 0; k < roles.length; k++) {
-            gameRoleList[gameRoles[i]].push(roles[k]);
+            // checkboxRoles and gameRoleList share indexes
+            if (!checkboxRoles[gameRoles[i]].includes(roles[k])) {
+              gameRoleList[gameRoles[i]].push(roles[k]);
+            }
           }
         }
       }
@@ -243,13 +263,372 @@ function ready() {
     }
   }
 
+  function checkboxCheck(_this) {
+    let number = _this.id.substr(8, 10);
+    let checkbox = document.getElementById('checkboxData' + number);
+    let checkboxes = {
+      checkbox1: document.getElementById(checkbox.id + 'checkbox1'),
+      checkbox2: document.getElementById(checkbox.id + 'checkbox2'),
+      checkbox3: document.getElementById(checkbox.id + 'checkbox3'),
+      checkbox4: document.getElementById(checkbox.id + 'checkbox4'),
+      checkbox5: document.getElementById(checkbox.id + 'checkbox5')
+    };
+    let labels = {
+      label1: document.getElementById(checkbox.id + 'label1'),
+      label2: document.getElementById(checkbox.id + 'label2'),
+      label3: document.getElementById(checkbox.id + 'label3'),
+      label4: document.getElementById(checkbox.id + 'label4'),
+      label5: document.getElementById(checkbox.id + 'label5')
+    };
+
+    switch(_this.value.toLowerCase()) {
+      case 'any random': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'Citizen';
+        checkboxes.checkbox2.value = 'Citizen';
+        checkboxes.checkbox3.value = 'Citizen';
+        checkboxes.checkbox4.value = 'Citizen';
+        checkboxes.checkbox5.value = 'Citizen';
+        labels.label1.innerHTML = 'Kill';
+        labels.label2.innerHTML = 'Mafia';
+        labels.label3.innerHTML = 'Town';
+        labels.label4.innerHTML = 'Neutral';
+        labels.label5.innerHTML = 'Triad';
+        break;
+      }
+      case 'town random': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'town killing';
+        checkboxes.checkbox2.value = 'town government';
+        checkboxes.checkbox3.value = 'town investigative';
+        checkboxes.checkbox4.value = 'town protective';
+        checkboxes.checkbox5.value = 'town power';
+        labels.label1.innerHTML = 'Kill';
+        labels.label2.innerHTML = 'Gov';
+        labels.label3.innerHTML = 'Invest';
+        labels.label4.innerHTML = 'Prot';
+        labels.label5.innerHTML = 'Power';
+        break;
+      }
+      case 'town government': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'citizen';
+        checkboxes.checkbox2.value = 'mason';
+        checkboxes.checkbox3.value = 'mayor';
+        checkboxes.checkbox4.value = 'mason leader';
+        checkboxes.checkbox5.value = 'crier';
+        labels.label1.innerHTML = 'Cit';
+        labels.label2.innerHTML = 'Mas';
+        labels.label3.innerHTML = 'Mayor/Marsh';
+        labels.label4.innerHTML = 'ML';
+        labels.label5.innerHTML = 'Crier';
+        break;
+      }
+      case 'town investigative': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'coroner';
+        checkboxes.checkbox2.value = 'sheriff';
+        checkboxes.checkbox3.value = 'investigator';
+        checkboxes.checkbox4.value = 'detective';
+        checkboxes.checkbox5.value = 'lookout';
+        labels.label1.innerHTML = 'Coro';
+        labels.label2.innerHTML = 'Sher';
+        labels.label3.innerHTML = 'Invest';
+        labels.label4.innerHTML = 'Det';
+        labels.label5.innerHTML = 'LO';
+        break;
+      }
+      case 'town protective': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'bus driver';
+        checkboxes.checkbox2.value = 'bodyguard';
+        checkboxes.checkbox3.value = 'doctor';
+        checkboxes.checkbox4.value = 'escort';
+        labels.label1.innerHTML ='BD';
+        labels.label2.innerHTML ='BG';
+        labels.label3.innerHTML ='Doc';
+        labels.label4.innerHTML ='Escort';
+        break;
+      }
+      case 'town killing': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'veteran';
+        checkboxes.checkbox2.value = 'jailor';
+        checkboxes.checkbox3.value = 'bodyguard';
+        checkboxes.checkbox4.value = 'vigilante';
+        labels.label1.innerHTML ='Vet';
+        labels.label2.innerHTML ='Jail';
+        labels.label3.innerHTML ='BG';
+        labels.label4.innerHTML ='Vig';
+        break;
+      }
+      case 'town power': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'veteran';
+        checkboxes.checkbox2.value = 'spy';
+        checkboxes.checkbox3.value = 'bus driver';
+        checkboxes.checkbox4.value = 'jailor';
+        labels.label1.innerHTML ='Vet';
+        labels.label2.innerHTML ='Spy';
+        labels.label3.innerHTML ='BD';
+        labels.label4.innerHTML ='Jail';
+        break;
+      }
+      case 'mafia random': {
+        checkboxes.checkbox1.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        checkboxes.checkbox1.value = 'mafia killing';
+        labels.label1.innerHTML ='Kill';
+        break;
+      }
+      case 'mafia killing': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'disguiser';
+        checkboxes.checkbox2.value = 'kidnapper';
+        checkboxes.checkbox3.value = 'mafia';
+        checkboxes.checkbox4.value = 'godfather';
+        labels.label1.innerHTML ='Disg';
+        labels.label2.innerHTML ='Kidnap';
+        labels.label3.innerHTML ='Maf';
+        labels.label4.innerHTML ='GF';
+        break;
+      }
+      case 'mafia support': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'blackmailer';
+        checkboxes.checkbox2.value = 'kidnapper';
+        checkboxes.checkbox3.value = 'consort';
+        checkboxes.checkbox4.value = 'consigilere';
+        checkboxes.checkbox5.value = 'agent';
+        labels.label1.innerHTML = 'BM';
+        labels.label2.innerHTML = 'Kidnap';
+        labels.label3.innerHTML = 'Consort';
+        labels.label4.innerHTML = 'Consig';
+        labels.label5.innerHTML = 'Agent';
+        break;
+      }
+      case 'mafia deception': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'disguiser';
+        checkboxes.checkbox2.value = 'framer';
+        checkboxes.checkbox3.value = 'janitor';
+        checkboxes.checkbox4.value = 'beguiler';
+        labels.label1.innerHTML ='Disg';
+        labels.label2.innerHTML ='Frame';
+        labels.label3.innerHTML ='Jani';
+        labels.label4.innerHTML ='Begu';
+        break;
+      }
+      case 'triad random': {
+        checkboxes.checkbox1.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        checkboxes.checkbox1.value = 'triad killing';
+        labels.label1.innerHTML ='Kill';
+        break;
+      }
+      case 'triad killing': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'informant';
+        checkboxes.checkbox2.value = 'interrogator';
+        checkboxes.checkbox3.value = 'enforcer';
+        checkboxes.checkbox4.value = 'dragon head';
+        labels.label1.innerHTML ='Info';
+        labels.label2.innerHTML ='Inter';
+        labels.label3.innerHTML ='Enfor';
+        labels.label4.innerHTML ='DH';
+        break;
+      }
+      case 'triad support': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'silencer';
+        checkboxes.checkbox2.value = 'interrogator';
+        checkboxes.checkbox3.value = 'liaison';
+        checkboxes.checkbox4.value = 'administrator';
+        checkboxes.checkbox5.value = 'vanguard';
+        labels.label1.innerHTML = 'Sile';
+        labels.label2.innerHTML = 'Inter';
+        labels.label3.innerHTML = 'Liais';
+        labels.label4.innerHTML = 'Admin';
+        labels.label5.innerHTML = 'Van';
+        break;
+      }
+      case 'triad deception': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'informant';
+        checkboxes.checkbox2.value = 'forger';
+        checkboxes.checkbox3.value = 'incense master';
+        checkboxes.checkbox4.value = 'deceiver';
+        labels.label1.innerHTML ='Info';
+        labels.label2.innerHTML ='Forg';
+        labels.label3.innerHTML ='Incen';
+        labels.label4.innerHTML ='Decei';
+        break;
+      }
+      case 'neutral random': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        checkboxes.checkbox1.value = 'neutral killing';
+        checkboxes.checkbox2.value = 'neutral evil';
+        checkboxes.checkbox3.value = 'neutral benign';
+        labels.label1.innerHTML ='Kill';
+        labels.label2.innerHTML ='Evil';
+        labels.label3.innerHTML ='Benign';
+        break;
+      }
+      case 'neutral killing': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        checkboxes.checkbox1.value = 'serial killer';
+        checkboxes.checkbox2.value = 'arsonist';
+        checkboxes.checkbox3.value = 'mass murderer';
+        labels.label1.innerHTML ='SK';
+        labels.label2.innerHTML ='Arso';
+        labels.label3.innerHTML ='MM';
+        break;
+      }
+      case 'neutral evil': {
+        for (let i in checkboxes) {
+          checkboxes[i].style.display = 'inline';
+        }
+        for (let i in labels) {
+          labels[i].style.display = 'inline';
+        }
+        checkboxes.checkbox1.value = 'neutral killing';
+        checkboxes.checkbox2.value = 'cultist';
+        checkboxes.checkbox3.value = 'judge';
+        checkboxes.checkbox4.value = 'witch';
+        checkboxes.checkbox5.value = 'auditor';
+        labels.label1.innerHTML = 'Kill';
+        labels.label2.innerHTML = 'Cult';
+        labels.label3.innerHTML = 'Judg';
+        labels.label4.innerHTML = 'Witc';
+        labels.label5.innerHTML = 'Audi';
+        break;
+      }
+      case 'neutral benign': {
+        checkboxes.checkbox1.style.display = 'inline';
+        checkboxes.checkbox2.style.display = 'inline';
+        checkboxes.checkbox3.style.display = 'inline';
+        checkboxes.checkbox4.style.display = 'inline';
+        labels.label1.style.display = 'inline';
+        labels.label2.style.display = 'inline';
+        labels.label3.style.display = 'inline';
+        labels.label4.style.display = 'inline';
+        checkboxes.checkbox1.value = 'survivor';
+        checkboxes.checkbox1.value = 'jester';
+        checkboxes.checkbox1.value = 'executioner';
+        checkboxes.checkbox1.value = 'amnesiac';
+        labels.label1.innerHTML ='Surv';
+        labels.label2.innerHTML ='Jest';
+        labels.label3.innerHTML ='Exec';
+        labels.label4.innerHTML ='Amne';
+        break;
+      }
+      default: {
+        for (let i in checkboxes) {
+          checkboxes[i].checked = false;
+          checkboxes[i].style.display = 'none';
+        }
+        for (let i in labels) {
+          labels[i].innerHTML = '';
+          labels[i].style.display = 'none';
+        }
+      }
+    }
+  }
+
   // debugging tool
   function autoFill() {
     const roleList = document.getElementsByClassName('roleList');
-    rolelistarr = Array.from(roleList);
-    for (let i = 0; i < 15; i++) {
-      rolelistarr[i].value = 'Any Random';
-    }
+    rolelistarr = Array.from(roleList); 
+
     rolelistarr[0].value = 'Town Government';
     rolelistarr[1].value = 'Town Investigative';
     rolelistarr[2].value = 'Town Investigative';
@@ -265,6 +644,10 @@ function ready() {
     rolelistarr[12].value = 'Neutral Killing';
     rolelistarr[13].value = 'Neutral Evil';
     rolelistarr[14].value = 'Neutral Benign';
+
+    for (let i = 0; i < rolelistarr.length; i++) {
+      checkboxCheck(rolelistarr[i]);
+    }
   }  
 
   // debugging tool
@@ -299,12 +682,32 @@ function ready() {
     for (let i = 1; i <= 15; i++) {
       let tr = document.createElement('tr');
       let td = document.createElement('td');
+      let checkboxData = document.createElement('td');
+      //checkboxData.style.display = 'none';
+      checkboxData.setAttribute('id', 'checkboxData' + i);
       let input = document.createElement('input');
       input.setAttribute('type', 'text');
       input.setAttribute('class', 'roleList');
-      input.setAttribute('list', 'categories')
+      input.setAttribute('list', 'categories');
+      input.setAttribute('id', 'gameRole' + i);
+      input.addEventListener('input', function(){checkboxCheck(this)});
+
+      for (let j = 1; j <= 5; j++) {
+        let checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+        checkbox.setAttribute('id', checkboxData.id + 'checkbox' + j);
+        checkbox.setAttribute('class', 'checkboxClass');
+        checkbox.style.display = 'none';
+        let label = document.createElement('label');
+        label.setAttribute('for', 'checkbox' + j);
+        label.setAttribute('id', checkboxData.id + 'label' + j);
+        checkboxData.appendChild(checkbox);
+        checkboxData.appendChild(label);
+      }
+
       table.appendChild(tr);
       tr.appendChild(td);
+      tr.appendChild(checkboxData);
       td.appendChild(input);
     }
 
@@ -322,16 +725,17 @@ function ready() {
       tr.setAttribute('id', 'player' + i);
       let td = document.createElement('td');
       td.innerHTML = i + '.';
-      td.setAttribute('class', 'playerListStyle')
+      td.setAttribute('class', 'playerListStyle');
       let td2 = document.createElement('td');
       td2.innerHTML = 'Player ';
-      td2.setAttribute('class', 'playerListStyle')
+      td2.setAttribute('class', 'playerListStyle');
       td2.style.color = colors[i-1];
       let td3 = document.createElement('td');
       let input = document.createElement('input');
       input.setAttribute('type', 'text');
       input.setAttribute('id', 'player' + i + 'Role');
       input.setAttribute('class', 'playerList');
+
       table.appendChild(tr);
       tr.appendChild(td);
       tr.appendChild(td2);
@@ -350,6 +754,24 @@ function ready() {
 
   let collisionColors = [];
   let collisions = [];
+
+  let checkboxRoles = {
+    gameRole1: [],
+    gameRole2: [],
+    gameRole3: [],
+    gameRole4: [],
+    gameRole5: [],
+    gameRole6: [],
+    gameRole7: [],
+    gameRole8: [],
+    gameRole9: [],
+    gameRole10: [],
+    gameRole11: [],
+    gameRole12: [],
+    gameRole13: [],
+    gameRole14: [],
+    gameRole15: []
+  };
 
   let avoidGameRole = [];
 
@@ -436,6 +858,7 @@ function ready() {
                          'silencer','vanguard', 'amnesiac', 'arsonist', 'auditor',
                          'cultist', 'executioner', 'jester', 'judge', 'mass murderer', 
                          'serial killer', 'survivor', 'witch', 'witch doctor'];
+  
   const roleCategories = {
 
     'any random' : ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
@@ -533,12 +956,12 @@ function ready() {
     'enforcer': ['enforcer'],
     'forger': ['forger'],
     'incense master': ['incense master'],
-    'informant': ['informat'], 
+    'informant': ['informant'], 
     'interrogator': ['iterrogator'], 
-    'liaison': ['liasion'],
+    'liaison': ['liaison'],
     'silencer': ['silencer'],
     'vanguard': ['vanguard'], 
-    'amnesiac': ['amneisac'],
+    'amnesiac': ['amnesiac'],
     'arsonist': ['arsonist'], 
     'auditor': ['auditor'],
     'cultist': ['cultist'], 
