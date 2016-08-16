@@ -138,6 +138,15 @@ function ready() {
         }
       }
     }
+
+    // if a role was not given a match, highlight it
+    for (let i in playerRoleList) {
+      if (playerRoleList[i] !== '' && roleMatches[i].length === 0) {
+        collisions.push(i);
+        highlightCollisions(collisions);
+      }
+    }
+
     assignContainers();
   }
 
@@ -248,21 +257,31 @@ function ready() {
 
   function highlightCollisions(collisions) {
     const playerListDOM = document.getElementsByClassName('playerList');
-    let collision = collisions[1].substr(10, 12)-1;
-    let color = '';
 
-    if (playerListDOM[collision].style.backgroundColor !== 'white') {
-      color = playerListDOM[collision].style.backgroundColor;
+    if (collisions[1] !== undefined) {
+      let collision = collisions[1].substr(10, 12)-1;
+      let color = '';
+
+      if (playerListDOM[collision].style.backgroundColor !== 'white') {
+        color = playerListDOM[collision].style.backgroundColor;
+      } else {
+        color = collisionColors.pop();
+      }
+
+      for (let i = 0; i < collisions.length; i++) {
+        let collision = collisions[i].substr(10, 12)-1;
+        playerListDOM[collision].style.backgroundColor = color;
+      }
     } else {
       color = collisionColors.pop();
-    }
-
-    for (let i = 0; i < collisions.length; i++) {
-      let collision = collisions[i].substr(10, 12)-1;
-      playerListDOM[collision].style.backgroundColor = color;
+      for (let i = 0; i < collisions.length; i++) {
+        let collision = collisions[i].substr(10, 12)-1;
+        playerListDOM[collision].style.backgroundColor = color;
+      }
     }
   }
 
+  // adds checkboxes where role editing is available
   function checkboxCheck(_this) {
     let number = _this.id.substr(8, 10);
     let checkbox = document.getElementById('checkboxData' + number);
@@ -688,9 +707,33 @@ function ready() {
       let input = document.createElement('input');
       input.setAttribute('type', 'text');
       input.setAttribute('class', 'roleList');
-      input.setAttribute('list', 'categories');
+      //input.setAttribute('list', 'categories');
       input.setAttribute('id', 'gameRole' + i);
       input.addEventListener('input', function(){checkboxCheck(this)});
+
+      // add autocomplete functionality
+      new autoComplete({
+        selector: input,
+        minChars: 3,
+        source: function(term, suggest) {
+          term = term.toLowerCase();
+          let choices = roleAutoComplete.concat(rolesArray);
+          let matches = [];
+          for (let i = 0; i < choices.length; i++) {
+            if (~choices[i].toLowerCase().indexOf(term)) {
+              matches.push(choices[i]);
+            }
+          }
+          suggest(matches);
+        },
+        onSelect: function(e, term, item ){
+          let list = document.getElementsByClassName('roleList');
+          listarr = Array.from(list); 
+          for (let i = 0; i < listarr.length; i++) {
+            checkboxCheck(listarr[i]);
+          }
+        }
+      });
 
       for (let j = 1; j <= 5; j++) {
         let checkbox = document.createElement('input');
@@ -735,6 +778,23 @@ function ready() {
       input.setAttribute('type', 'text');
       input.setAttribute('id', 'player' + i + 'Role');
       input.setAttribute('class', 'playerList');
+
+      // add autocomplete functionality
+      new autoComplete({
+        selector: input,
+        minChars: 2,
+        source: function(term, suggest) {
+          term = term.toLowerCase();
+          let choices = rolesArray;
+          let matches = [];
+          for (let i = 0; i < choices.length; i++) {
+            if (~choices[i].toLowerCase().indexOf(term)) {
+              matches.push(choices[i]);
+            }
+          }
+          suggest(matches);
+        }
+      });
 
       table.appendChild(tr);
       tr.appendChild(td);
@@ -848,16 +908,17 @@ function ready() {
   };
 
   const rolesArray = ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
-                         'detective', 'doctor', 'escort', 'investigator', 'jailor',
-                         'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
-                         'sheriff', 'spy', 'veteran', 'vigilante', 'agent',
-                         'beguiler', 'blackmailer', 'consigilere', 'consort',
-                         'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
-                         'mafioso', 'administrator', 'deceiver', 'dragon head', 'enforcer',
-                         'forger', 'incense master', 'informant', 'interrogator', 'liaison',
-                         'silencer','vanguard', 'amnesiac', 'arsonist', 'auditor',
-                         'cultist', 'executioner', 'jester', 'judge', 'mass murderer', 
-                         'serial killer', 'survivor', 'witch', 'witch doctor'];
+                      'detective', 'doctor', 'escort', 'investigator', 'jailor',
+                      'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
+                      'sheriff', 'spy', 'veteran', 'vigilante', 'agent',
+                      'beguiler', 'blackmailer', 'consigilere', 'consort',
+                      'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
+                      'mafioso', 'administrator', 'deceiver', 'dragon head', 'enforcer',
+                      'forger', 'incense master', 'informant', 'interrogator', 'liaison',
+                      'silencer','vanguard', 'amnesiac', 'arsonist', 'auditor',
+                      'cultist', 'executioner', 'jester', 'judge', 'mass murderer', 
+                      'serial killer', 'survivor', 'witch', 'witch doctor'
+                      ];
   
   const roleCategories = {
 
@@ -974,4 +1035,13 @@ function ready() {
     'witch': ['witch'], 
     'witch doctor': ['witch']
   };
+
+  const roleAutoComplete = ['town random', 'town government', 'town investigative',
+                            'town protective', 'town killing', 'town power',
+                            'mafia random', 'mafia killing', 'mafia deception',
+                            'mafia killing', 'mafia deception', 'mafia support',
+                            'triad random', 'triad killing', 'triad deception',
+                            'triad support', 'neutral random', 'neutral killing',
+                            'neutral evil', 'neutral benign', 'any random'
+                            ];
 }
