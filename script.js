@@ -257,6 +257,7 @@ function ready() {
 
   function highlightCollisions(collisions) {
     const playerListDOM = document.getElementsByClassName('playerList');
+    const confirmationDOM = document.getElementsByClassName('confirmationCheckbox');
 
     if (collisions[1] !== undefined) {
       let collision = collisions[1].substr(10, 12)-1;
@@ -270,13 +271,17 @@ function ready() {
 
       for (let i = 0; i < collisions.length; i++) {
         let collision = collisions[i].substr(10, 12)-1;
-        playerListDOM[collision].style.backgroundColor = color;
+        if (!confirmationDOM[collision].checked) {
+          playerListDOM[collision].style.backgroundColor = color;
+        }
       }
     } else {
       color = collisionColors.pop();
       for (let i = 0; i < collisions.length; i++) {
         let collision = collisions[i].substr(10, 12)-1;
-        playerListDOM[collision].style.backgroundColor = color;
+        if (!confirmationDOM[collision].checked) {
+          playerListDOM[collision].style.backgroundColor = color;
+        }
       }
     }
   }
@@ -778,6 +783,10 @@ function ready() {
       input.setAttribute('type', 'text');
       input.setAttribute('id', 'player' + i + 'Role');
       input.setAttribute('class', 'playerList');
+      let td4 = document.createElement('td');
+      let checkbox = document.createElement('input');
+      checkbox.setAttribute('type', 'checkbox');
+      checkbox.setAttribute('class', 'confirmationCheckbox');
 
       // add autocomplete functionality
       new autoComplete({
@@ -801,6 +810,8 @@ function ready() {
       tr.appendChild(td2);
       tr.appendChild(td3);
       td3.appendChild(input);
+      tr.appendChild(td4);
+      td4.appendChild(checkbox);
     }
 
     placement.appendChild(table);
