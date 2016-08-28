@@ -5,6 +5,209 @@ if (document.readyState !== 'loading') {
 }
 
 function ready() {
+  const roleListSubmit = document.getElementById('roleListSubmit');
+  const playerListSubmit = document.getElementById('playerListSubmit');
+  roleListSubmit.addEventListener('click', submitRoleList);
+  document.getElementById('autofillButton').addEventListener('click', autoFill);
+  document.getElementById('autofillButton2').addEventListener('click', autoFill2);
+
+  let collisionColors = [];
+  let collisions = [];
+
+  let avoidGameRole = [];
+
+  const gameRoleList = {
+    gameRole1: [],
+    gameRole2: [],
+    gameRole3: [],
+    gameRole4: [],
+    gameRole5: [],
+    gameRole6: [],
+    gameRole7: [],
+    gameRole8: [],
+    gameRole9: [],
+    gameRole10: [],
+    gameRole11: [],
+    gameRole12: [],
+    gameRole13: [],
+    gameRole14: [],
+    gameRole15: []
+  };
+
+  let checkboxRoles = gameRoleList;
+
+  const playerRoleList = {
+    playerRole1: '',
+    playerRole2: '',
+    playerRole3: '',
+    playerRole4: '',
+    playerRole5: '',
+    playerRole6: '',
+    playerRole7: '',
+    playerRole8: '',
+    playerRole9: '',
+    playerRole10: '',
+    playerRole11: '',
+    playerRole12: '',
+    playerRole13: '',
+    playerRole14: '',
+    playerRole15: ''
+  };
+
+  const roleMatches = {
+    playerRole1: [],
+    playerRole2: [],
+    playerRole3: [],
+    playerRole4: [],
+    playerRole5: [],
+    playerRole6: [],
+    playerRole7: [],
+    playerRole8: [],
+    playerRole9: [],
+    playerRole10: [],
+    playerRole11: [],
+    playerRole12: [],
+    playerRole13: [],
+    playerRole14: [],
+    playerRole15: []
+  };
+
+  const containers = {
+    gameRole1: '',
+    gameRole2: '',
+    gameRole3: '',
+    gameRole4: '',
+    gameRole5: '',
+    gameRole6: '',
+    gameRole7: '',
+    gameRole8: '',
+    gameRole9: '',
+    gameRole10: '',
+    gameRole11: '',
+    gameRole12: '',
+    gameRole13: '',
+    gameRole14: '',
+    gameRole15: ''
+  };
+
+  const rolesArray = ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
+                      'detective', 'doctor', 'escort', 'investigator', 'jailor',
+                      'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
+                      'sheriff', 'spy', 'veteran', 'vigilante', 'agent',
+                      'beguiler', 'blackmailer', 'consigilere', 'consort',
+                      'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
+                      'mafioso', 'administrator', 'deceiver', 'dragon head', 'enforcer',
+                      'forger', 'incense master', 'informant', 'interrogator', 'liaison',
+                      'silencer','vanguard', 'amnesiac', 'arsonist', 'auditor',
+                      'cultist', 'executioner', 'jester', 'judge', 'mass murderer', 
+                      'serial killer', 'survivor', 'witch', 'witch doctor'
+                      ];
+  
+  const roleCategories = {
+
+    'any random': rolesArray,
+
+    'town random': ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
+                     'detective', 'doctor', 'escort', 'investigator', 'jailor',
+                     'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
+                     'sheriff', 'spy', 'veteran', 'vigilante'],
+
+    'town government': ['citizen', 'crier', 'marshall', 'mason', 'mason leader', 
+                         'mayor'],
+
+    'town investigative': ['coroner', 'detective', 'investigator', 'lookout', 'sheriff'],
+
+    'town protective': ['bodyguard', 'bus driver', 'doctor', 'escort'],
+
+    'town killing': ['bodyguard', 'jailor', 'veteran', 'vigilante'],
+
+    'town power': ['bus driver', 'jailor', 'spy', 'veteran'],
+
+    'mafia random': ['agent', 'beguiler', 'blackmailer', 'consigilere', 'consort',
+                     'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
+                     'mafioso'],
+
+    'mafia killing': ['disguiser', 'godfather', 'kidnapper', 'mafioso'],
+
+    'mafia support': ['agent', 'blackmailer', 'consigilere', 'consort', 'kidnapper'],
+
+    'mafia deception': ['beguiler', 'disguiser', 'framer', 'janitor'],
+
+    'triad random': ['administrator', 'deceiver', 'dragon head', 'enforcer', 'forger',
+                     'incense master', 'informant', 'interrogator', 'liaison', 'silencer',
+                     'vanguard'],
+
+    'triad killing': ['dragon head', 'enforcer', 'informant', 'interrogator'],
+
+    'triad support': ['administrator', 'interrogator', 'liaison', 'silencer', 'vanguard'],
+
+    'triad deception': ['deceiver', 'forger', 'incense master', 'informant'],
+
+    'neutral random': ['amnesiac', 'arsonist', 'auditor', 'cultist', 'executioner',
+                       'jester', 'judge', 'mass murderer', 'serial killer', 'survivor',
+                       'witch', 'witch doctor'],
+
+    'neutral killing': ['arsonist', 'mass murderer', 'serial killer'],
+
+    'neutral evil': ['arsonist', 'auditor', 'cultist', 'judge', 'mass murderer',
+                     'serial killer', 'witch', 'witch doctor'],
+
+    'neutral benign': ['amnesiac', 'executioner', 'jester', 'survivor'],
+
+    'bodyguard': ['bodyguard'], 
+    'bus driver': ['bus driver'], 
+    'citizen': ['citizen'], 
+    'coroner': ['coroner'], 
+    'crier': ['crier'],
+    'detective': ['detective'], 
+    'doctor': ['doctor'], 
+    'escort': ['escort'], 
+    'investigator': ['investigator'],
+    'jailor': ['jailor'],
+    'lookout': ['lookout'], 
+    'marshall': ['marshall'], 
+    'mason': ['mason'], 
+    'mason leader': ['mason leader'], 
+    'mayor': ['mayor'],
+    'sheriff': ['sheriff'], 
+    'spy': ['spy'], 
+    'veteran': ['veteran'], 
+    'vigilante': ['vigilante'],
+    'agent': ['agent'],
+    'beguiler': ['beguiler'], 
+    'blackmailer': ['blackmailer'], 
+    'consigilere': ['consigilere'],
+    'consort': ['consort'],
+    'disguiser': ['disguier'], 
+    'framer': ['framer'], 
+    'godfather': ['godfather'], 
+    'janitor': ['janitor'], 
+    'kidnapper': ['kidnapper'], 
+    'mafioso': ['mafioso'], 
+    'administrator': ['administrator'], 
+    'deceiver': ['deceiver'],
+    'dragon head': ['dragon head'],
+    'enforcer': ['enforcer'],
+    'forger': ['forger'],
+    'incense master': ['incense master'],
+    'informant': ['informant'], 
+    'interrogator': ['iterrogator'], 
+    'liaison': ['liaison'],
+    'silencer': ['silencer'],
+    'vanguard': ['vanguard'], 
+    'amnesiac': ['amnesiac'],
+    'arsonist': ['arsonist'], 
+    'auditor': ['auditor'],
+    'cultist': ['cultist'], 
+    'executioner': ['executioner'], 
+    'jester': ['jester'], 
+    'judge': ['judge'], 
+    'mass murderer': ['mass murderer'], 
+    'serial killer': ['serial killer'], 
+    'survivor': ['survivor'], 
+    'witch': ['witch'], 
+    'witch doctor': ['witch']
+  };
 
   function submitRoleList() {
     const roleListDOM = document.getElementsByClassName('roleList');
@@ -23,6 +226,70 @@ function ready() {
 
     assignRoles(roleList);
     playerListSubmit.addEventListener('click', submitPlayerList);
+  }
+
+  // game categories change into respective game roles
+  function assignRoles(list) {
+    for (let i in gameRoleList) {
+      gameRoleList[i] = [];
+    }
+    checkboxRolesAssign();
+    console.log(checkboxRoles);
+
+    const gameRoles = Object.keys(gameRoleList);
+
+    for (let i = 0; i < list.length; i++) {
+      for (let j in roleCategories) {
+        if (list[i] === j) {
+          let roles = roleCategories[j];
+          for (let k = 0; k < roles.length; k++) {
+            // checkboxRoles and gameRoleList share indexes
+            if (!checkboxRoles[gameRoles[i]].includes(roles[k])) {
+              gameRoleList[gameRoles[i]].push(roles[k]);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // fill the checkbox array of roles to avoid
+  function checkboxRolesAssign() {
+    let checkboxes = document.getElementsByClassName('checkboxClass');
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        let number = checkboxes[i].parentElement.id.substr(12, 14);
+        let index = 'gameRole' + number;
+        let checkbox = checkboxes[i].value;
+        console.log(roleCategories[checkbox]);
+        Array.prototype.push.apply(checkboxRoles[index], roleCategories[checkbox]);
+      }
+    }
+  }
+
+  function verifyList(list, listDOM, checkArray) {
+    if (checkArray === roleCategories) {
+      checkArray = Object.keys(roleCategories);
+    }
+    for (let i = 0; i < list.length; i++) {
+      for (let j = 0; j < checkArray.length; j++) {
+        if (list[i] === '' || list[i] === checkArray[j]) {
+          break;
+        } else if (j === checkArray.length-1) {
+          focusError(i, listDOM);
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // focuses on spelling errors
+  function focusError(index, list) {
+    list[index].focus();
+    list[index].style.color = 'red';
+    list[index].value = 'Invalid Role';
   }
 
   function submitPlayerList() {
@@ -51,70 +318,6 @@ function ready() {
     }
 
     matchSearch();
-  }
-
-  // fill the checkbox array of roles to avoid
-  function checkboxRolesAssign() {
-    let checkboxes = document.getElementsByClassName('checkboxClass');
-
-    for (let i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].checked) {
-        let number = checkboxes[i].parentElement.id.substr(12, 14);
-        let index = 'gameRole' + number;
-        let checkbox = checkboxes[i].value;
-        console.log(roleCategories[checkbox]);
-        Array.prototype.push.apply(checkboxRoles[index], roleCategories[checkbox]);
-      }
-    }
-  }
-
-  // game categories change into respective game roles
-  function assignRoles(list) {
-    for (let i in gameRoleList) {
-      gameRoleList[i] = [];
-    }
-    checkboxRolesAssign();
-    console.log(checkboxRoles);
-
-    const gameRoles = Object.keys(gameRoleList);
-
-    for (let i = 0; i < list.length; i++) {
-      for (let j in roleCategories) {
-        if (list[i] === j) {
-          let roles = roleCategories[j];
-          for (let k = 0; k < roles.length; k++) {
-            // checkboxRoles and gameRoleList share indexes
-            if (!checkboxRoles[gameRoles[i]].includes(roles[k])) {
-              gameRoleList[gameRoles[i]].push(roles[k]);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  function verifyList(list, listDOM, checkArray) {
-    if (checkArray === roleCategories) {
-      checkArray = Object.keys(roleCategories);
-    }
-    for (let i = 0; i < list.length; i++) {
-      for (let j = 0; j < checkArray.length; j++) {
-        if (list[i] === '' || list[i] === checkArray[j]) {
-          break;
-        } else if (j === checkArray.length-1) {
-          focusError(i, listDOM);
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // focuses on spelling errors
-  function focusError(index, list) {
-    list[index].focus();
-    list[index].style.color = 'red';
-    list[index].value = 'Invalid Role';
   }
 
   function matchSearch() {
@@ -149,7 +352,7 @@ function ready() {
 
     assignContainers();
   }
-
+  
   function assignContainers() {
     // clear past data
     collisions = [];
@@ -699,7 +902,7 @@ function ready() {
   }
 
   // creates HTML tables
-  (function () {
+  (function nicememe() {
     let table = document.createElement('table');
     let placement = document.getElementById('roleListPlacement');
 
@@ -722,7 +925,7 @@ function ready() {
         minChars: 3,
         source: function(term, suggest) {
           term = term.toLowerCase();
-          let choices = roleAutoComplete.concat(rolesArray);
+          let choices = Object.keys(roleCategories);
           let matches = [];
           for (let i = 0; i < choices.length; i++) {
             if (~choices[i].toLowerCase().indexOf(term)) {
@@ -816,243 +1019,4 @@ function ready() {
 
     placement.appendChild(table);
   }());
-
-  const roleListSubmit = document.getElementById('roleListSubmit');
-  const playerListSubmit = document.getElementById('playerListSubmit');
-  roleListSubmit.addEventListener('click', submitRoleList);
-  document.getElementById('autofillButton').addEventListener('click', autoFill);
-  document.getElementById('autofillButton2').addEventListener('click', autoFill2);
-
-  let collisionColors = [];
-  let collisions = [];
-
-  let checkboxRoles = {
-    gameRole1: [],
-    gameRole2: [],
-    gameRole3: [],
-    gameRole4: [],
-    gameRole5: [],
-    gameRole6: [],
-    gameRole7: [],
-    gameRole8: [],
-    gameRole9: [],
-    gameRole10: [],
-    gameRole11: [],
-    gameRole12: [],
-    gameRole13: [],
-    gameRole14: [],
-    gameRole15: []
-  };
-
-  let avoidGameRole = [];
-
-  const gameRoleList = {
-    gameRole1: [],
-    gameRole2: [],
-    gameRole3: [],
-    gameRole4: [],
-    gameRole5: [],
-    gameRole6: [],
-    gameRole7: [],
-    gameRole8: [],
-    gameRole9: [],
-    gameRole10: [],
-    gameRole11: [],
-    gameRole12: [],
-    gameRole13: [],
-    gameRole14: [],
-    gameRole15: []
-  };
-
-  const playerRoleList = {
-    playerRole1: '',
-    playerRole2: '',
-    playerRole3: '',
-    playerRole4: '',
-    playerRole5: '',
-    playerRole6: '',
-    playerRole7: '',
-    playerRole8: '',
-    playerRole9: '',
-    playerRole10: '',
-    playerRole11: '',
-    playerRole12: '',
-    playerRole13: '',
-    playerRole14: '',
-    playerRole15: ''
-  };
-
-  const roleMatches = {
-    playerRole1: [],
-    playerRole2: [],
-    playerRole3: [],
-    playerRole4: [],
-    playerRole5: [],
-    playerRole6: [],
-    playerRole7: [],
-    playerRole8: [],
-    playerRole9: [],
-    playerRole10: [],
-    playerRole11: [],
-    playerRole12: [],
-    playerRole13: [],
-    playerRole14: [],
-    playerRole15: []
-  };
-
-  const containers = {
-    gameRole1: '',
-    gameRole2: '',
-    gameRole3: '',
-    gameRole4: '',
-    gameRole5: '',
-    gameRole6: '',
-    gameRole7: '',
-    gameRole8: '',
-    gameRole9: '',
-    gameRole10: '',
-    gameRole11: '',
-    gameRole12: '',
-    gameRole13: '',
-    gameRole14: '',
-    gameRole15: ''
-  };
-
-  const rolesArray = ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
-                      'detective', 'doctor', 'escort', 'investigator', 'jailor',
-                      'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
-                      'sheriff', 'spy', 'veteran', 'vigilante', 'agent',
-                      'beguiler', 'blackmailer', 'consigilere', 'consort',
-                      'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
-                      'mafioso', 'administrator', 'deceiver', 'dragon head', 'enforcer',
-                      'forger', 'incense master', 'informant', 'interrogator', 'liaison',
-                      'silencer','vanguard', 'amnesiac', 'arsonist', 'auditor',
-                      'cultist', 'executioner', 'jester', 'judge', 'mass murderer', 
-                      'serial killer', 'survivor', 'witch', 'witch doctor'
-                      ];
-  
-  const roleCategories = {
-
-    'any random' : ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
-                    'detective', 'doctor', 'escort', 'investigator', 'jailor',
-                    'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
-                    'sheriff', 'spy', 'veteran', 'vigilante', 'agent',
-                    'beguiler', 'blackmailer', 'consigilere', 'consort',
-                    'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
-                    'mafioso', 'administrator', 'deceiver', 'dragon head', 'enforcer',
-                    'forger', 'incense master', 'informant', 'interrogator', 'liaison',
-                    'silencer','vanguard', 'amnesiac', 'arsonist', 'auditor',
-                    'cultist', 'executioner', 'jester', 'judge', 'mass murderer', 
-                    'serial killer', 'survivor', 'witch', 'witch doctor'],
-
-    'town random' : ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
-                     'detective', 'doctor', 'escort', 'investigator', 'jailor',
-                     'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
-                     'sheriff', 'spy', 'veteran', 'vigilante'],
-
-    'town government' : ['citizen', 'crier', 'marshall', 'mason', 'mason leader', 
-                         'mayor'],
-
-    'town investigative': ['coroner', 'detective', 'investigator', 'lookout', 'sheriff'],
-
-    'town protective': ['bodyguard', 'bus driver', 'doctor', 'escort'],
-
-    'town killing': ['bodyguard', 'jailor', 'veteran', 'vigilante'],
-
-    'town power': ['bus driver', 'jailor', 'spy', 'veteran'],
-
-    'mafia random': ['agent', 'beguiler', 'blackmailer', 'consigilere', 'consort',
-                     'disguiser', 'framer', 'godfather', 'janitor', 'kidnapper', 
-                     'mafioso'],
-
-    'mafia killing': ['disguiser', 'godfather', 'kidnapper', 'mafioso'],
-
-    'mafia support': ['agent', 'blackmailer', 'consigilere', 'consort', 'kidnapper'],
-
-    'mafia deception': ['beguiler', 'disguiser', 'framer', 'janitor'],
-
-    'triad random': ['administrator', 'deceiver', 'dragon head', 'enforcer', 'forger',
-                     'incense master', 'informant', 'interrogator', 'liaison', 'silencer',
-                     'vanguard'],
-
-    'triad killing': ['dragon head', 'enforcer', 'informant', 'interrogator'],
-
-    'triad support': ['administrator', 'interrogator', 'liaison', 'silencer', 'vanguard'],
-
-    'triad deception': ['deceiver', 'forger', 'incense master', 'informant'],
-
-    'neutral random': ['amnesiac', 'arsonist', 'auditor', 'cultist', 'executioner',
-                       'jester', 'judge', 'mass murderer', 'serial killer', 'survivor',
-                       'witch', 'witch doctor'],
-
-    'neutral killing': ['arsonist', 'mass murderer', 'serial killer'],
-
-    'neutral evil': ['arsonist', 'auditor', 'cultist', 'judge', 'mass murderer',
-                     'serial killer', 'witch', 'witch doctor'],
-
-    'neutral benign': ['amnesiac', 'executioner', 'jester', 'survivor'],
-
-    'bodyguard': ['bodyguard'], 
-    'bus driver': ['bus driver'], 
-    'citizen': ['citizen'], 
-    'coroner': ['coroner'], 
-    'crier': ['crier'],
-    'detective': ['detective'], 
-    'doctor': ['doctor'], 
-    'escort': ['escort'], 
-    'investigator': ['investigator'],
-    'jailor': ['jailor'],
-    'lookout': ['lookout'], 
-    'marshall': ['marshall'], 
-    'mason': ['mason'], 
-    'mason leader': ['mason leader'], 
-    'mayor': ['mayor'],
-    'sheriff': ['sheriff'], 
-    'spy': ['spy'], 
-    'veteran': ['veteran'], 
-    'vigilante': ['vigilante'],
-    'agent': ['agent'],
-    'beguiler': ['beguiler'], 
-    'blackmailer': ['blackmailer'], 
-    'consigilere': ['consigilere'],
-    'consort': ['consort'],
-    'disguiser': ['disguier'], 
-    'framer': ['framer'], 
-    'godfather': ['godfather'], 
-    'janitor': ['janitor'], 
-    'kidnapper': ['kidnapper'], 
-    'mafioso': ['mafioso'], 
-    'administrator': ['administrator'], 
-    'deceiver': ['deceiver'],
-    'dragon head': ['dragon head'],
-    'enforcer': ['enforcer'],
-    'forger': ['forger'],
-    'incense master': ['incense master'],
-    'informant': ['informant'], 
-    'interrogator': ['iterrogator'], 
-    'liaison': ['liaison'],
-    'silencer': ['silencer'],
-    'vanguard': ['vanguard'], 
-    'amnesiac': ['amnesiac'],
-    'arsonist': ['arsonist'], 
-    'auditor': ['auditor'],
-    'cultist': ['cultist'], 
-    'executioner': ['executioner'], 
-    'jester': ['jester'], 
-    'judge': ['judge'], 
-    'mass murderer': ['mass murderer'], 
-    'serial killer': ['serial killer'], 
-    'survivor': ['survivor'], 
-    'witch': ['witch'], 
-    'witch doctor': ['witch']
-  };
-
-  const roleAutoComplete = ['town random', 'town government', 'town investigative',
-                            'town protective', 'town killing', 'town power',
-                            'mafia random', 'mafia killing', 'mafia deception',
-                            'mafia killing', 'mafia deception', 'mafia support',
-                            'triad random', 'triad killing', 'triad deception',
-                            'triad support', 'neutral random', 'neutral killing',
-                            'neutral evil', 'neutral benign', 'any random'
-                            ];
 }
