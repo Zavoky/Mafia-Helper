@@ -34,7 +34,23 @@ function ready() {
     gameRole15: []
   };
 
-  let checkboxRoles = gameRoleList;
+  let checkboxRoles = {
+    checkbox1: [],
+    checkbox2: [],
+    checkbox3: [],
+    checkbox4: [],
+    checkbox5: [],
+    checkbox6: [],
+    checkbox7: [],
+    checkbox8: [],
+    checkbox9: [],
+    checkbox10: [],
+    checkbox11: [],
+    checkbox12: [],
+    checkbox13: [],
+    checkbox14: [],
+    checkbox15: []
+  };
 
   const playerRoleList = {
     playerRole1: '',
@@ -107,6 +123,10 @@ function ready() {
 
     'any random': rolesArray,
 
+    'any killing': ['bodyguard', 'jailor', 'veteran', 'vigilante', 'disguiser',
+                    'godfather', 'kidnapper', 'mafioso', 'dragon head', 'enforcer',
+                    'informant', 'interrogator', 'arsonist', 'mass mudrerer', 'serial killer'],
+
     'town random': ['bodyguard', 'bus driver', 'citizen', 'coroner', 'crier',
                      'detective', 'doctor', 'escort', 'investigator', 'jailor',
                      'lookout', 'marshall', 'mason', 'mason leader', 'mayor',
@@ -178,7 +198,7 @@ function ready() {
     'blackmailer': ['blackmailer'], 
     'consigilere': ['consigilere'],
     'consort': ['consort'],
-    'disguiser': ['disguier'], 
+    'disguiser': ['disguiser'], 
     'framer': ['framer'], 
     'godfather': ['godfather'], 
     'janitor': ['janitor'], 
@@ -214,13 +234,12 @@ function ready() {
     let roleList = [];
 
     for (let i = 0; i < roleListDOM.length; i++) {
-      roleList[i] = roleListDOM[i].value.toLowerCase();
-
       // reset anything done by focusError()
       roleListDOM[i].style.color = 'black';
+      let input = roleListDOM[i].value.toLowerCase();
+      roleList[i] = input;
     }
     if (!verifyList(roleList, roleListDOM, roleCategories)) {
-      console.log('Role list is not valid');
       return;
     }
 
@@ -229,25 +248,28 @@ function ready() {
   }
 
   // game categories change into respective game roles
-  function assignRoles(list) {
+  function assignRoles(roleList) {
     for (let i in gameRoleList) {
       gameRoleList[i] = [];
     }
     checkboxRolesAssign();
-    console.log(checkboxRoles);
 
     const gameRoles = Object.keys(gameRoleList);
+    const checkboxKeys = Object.keys(checkboxRoles);
 
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < roleList.length; i++) {
       for (let j in roleCategories) {
-        if (list[i] === j) {
+        if (roleList[i] === j) {
           let roles = roleCategories[j];
           for (let k = 0; k < roles.length; k++) {
-            // checkboxRoles and gameRoleList share indexes
-            if (!checkboxRoles[gameRoles[i]].includes(roles[k])) {
-              gameRoleList[gameRoles[i]].push(roles[k]);
+            let gameRole = gameRoles[i];
+            let checkboxKey = checkboxKeys[i];
+            let role = roles[k];
+            if (!checkboxRoles[checkboxKey].includes(role)) {
+              gameRoleList[gameRole].push(role);
             }
           }
+          break;
         }
       }
     }
@@ -255,19 +277,26 @@ function ready() {
   
   // fill the checkbox array of roles to avoid
   function checkboxRolesAssign() {
+    for (let i in checkboxRoles) {
+      checkboxRoles[i] = [];
+    }
+
     let checkboxes = document.getElementsByClassName('checkboxClass');
+    const checkboxKeys = Object.keys(checkboxRoles);
 
     for (let i = 0; i < checkboxes.length; i++) {
       if (checkboxes[i].checked) {
-        let number = checkboxes[i].parentElement.id.substr(12, 14);
-        let index = 'gameRole' + number;
-        let checkbox = checkboxes[i].value;
-        console.log(roleCategories[checkbox]);
-        Array.prototype.push.apply(checkboxRoles[index], roleCategories[checkbox]);
+        let index = Math.floor(i/5);
+        let checkboxKey = checkboxKeys[index];
+        let roleCategoriesKey = checkboxes[i].value;
+        let roles = roleCategories[roleCategoriesKey];
+
+        checkboxRoles[checkboxKey] = checkboxRoles[checkboxKey].concat(roles);
       }
     }
   }
 
+  // verifies that input is acceptable text
   function verifyList(list, listDOM, checkArray) {
     if (checkArray === roleCategories) {
       checkArray = Object.keys(roleCategories);
@@ -300,15 +329,14 @@ function ready() {
                        '#66ffff', '#ff99ff', '#ffff99', '#ff9999'];
 
     for (let i = 0; i < playerListDOM.length; i++) {
-      playerList[i] = playerListDOM[i].value.toLowerCase();
-
       // reset anything done by focusError() or highlightCollisions()
       playerListDOM[i].style.color = 'black';
       playerListDOM[i].style.backgroundColor = 'white';
+      let input = playerListDOM[i].value.toLowerCase();
+      playerList[i] = input;
     }
 
     if (!verifyList(playerList, playerListDOM, rolesArray)) {
-      console.log('Input not valid');
       return;
     }
 
@@ -319,7 +347,7 @@ function ready() {
 
     matchSearch();
   }
-
+  // fills roleMatches with role and game role matches
   function matchSearch() {
     // clear the roleMatches of old information
     for (let i in roleMatches) {
@@ -516,11 +544,11 @@ function ready() {
         for (let i in labels) {
           labels[i].style.display = 'inline';
         }
-        checkboxes.checkbox1.value = 'Citizen';
-        checkboxes.checkbox2.value = 'Citizen';
-        checkboxes.checkbox3.value = 'Citizen';
-        checkboxes.checkbox4.value = 'Citizen';
-        checkboxes.checkbox5.value = 'Citizen';
+        checkboxes.checkbox1.value = 'any killing';
+        checkboxes.checkbox2.value = 'mafia random';
+        checkboxes.checkbox3.value = 'town random';
+        checkboxes.checkbox4.value = 'neutral random';
+        checkboxes.checkbox5.value = 'triad random';
         labels.label1.innerHTML = 'Kill';
         labels.label2.innerHTML = 'Mafia';
         labels.label3.innerHTML = 'Town';
@@ -829,9 +857,9 @@ function ready() {
         labels.label3.style.display = 'inline';
         labels.label4.style.display = 'inline';
         checkboxes.checkbox1.value = 'survivor';
-        checkboxes.checkbox1.value = 'jester';
-        checkboxes.checkbox1.value = 'executioner';
-        checkboxes.checkbox1.value = 'amnesiac';
+        checkboxes.checkbox2.value = 'jester';
+        checkboxes.checkbox3.value = 'executioner';
+        checkboxes.checkbox4.value = 'amnesiac';
         labels.label1.innerHTML ='Surv';
         labels.label2.innerHTML ='Jest';
         labels.label3.innerHTML ='Exec';
