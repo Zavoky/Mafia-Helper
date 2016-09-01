@@ -9,7 +9,6 @@ function ready() {
   const playerListSubmit = document.getElementById('playerListSubmit');
   roleListSubmit.addEventListener('click', submitRoleList);
   document.getElementById('autofillButton').addEventListener('click', autoFill);
-  document.getElementById('autofillButton2').addEventListener('click', autoFill2);
 
   let collisionColors = [];
   let collisions = [];
@@ -647,7 +646,7 @@ function ready() {
   function autoFill() {
     const roleList = document.getElementsByClassName('roleList');
     rolelistarr = Array.from(roleList); 
-
+    
     rolelistarr[0].value = 'Town Government';
     rolelistarr[1].value = 'Town Investigative';
     rolelistarr[2].value = 'Town Investigative';
@@ -669,34 +668,17 @@ function ready() {
     }
   }  
 
-  // debugging tool
-  function autoFill2() {
-    const playerList = document.getElementsByClassName('playerList');
-    rolelistarr = Array.from(playerList);
-    for (let i = 0; i < 15; i++) {
-      rolelistarr[i].value = 'Jester';
-    } 
-    rolelistarr[0].value = 'Mayor';
-    rolelistarr[1].value = 'Sheriff';
-    rolelistarr[2].value = 'Detective';
-    rolelistarr[3].value = 'Doctor';
-    rolelistarr[4].value = 'Bodyguard';
-    rolelistarr[5].value = 'Veteran';
-    rolelistarr[6].value = 'Vigilante';
-    rolelistarr[7].value = 'Spy';
-    rolelistarr[8].value = 'Bus Driver';
-    rolelistarr[9].value = 'Godfather';
-    rolelistarr[10].value = 'Framer';
-    rolelistarr[11].value = 'Kidnapper';
-    rolelistarr[12].value = 'Serial Killer';
-    rolelistarr[13].value = 'Arsonist';
-    rolelistarr[14].value = 'Jester';
-  }
-
   // creates HTML tables
   (function () {
     let table = document.createElement('table');
     let placement = document.getElementById('roleListPlacement');
+
+    let tr = document.createElement('tr');
+    let header = document.createElement('th');
+    let roleListText = document.createTextNode('Role List');
+    table.appendChild(tr);
+    tr.appendChild(header);
+    header.appendChild(roleListText);
 
     for (let i = 1; i <= 15; i++) {
       let tr = document.createElement('tr');
@@ -759,6 +741,21 @@ function ready() {
     const colors = ['#B4141E', '#0042FF', '#1CA7EA', '#6900A1', '#EBE129',
                   '#FE8A0E', '#168000', '#CCA6FC', '#A633BF', '#525494',
                   '#168962', '#753F06', '#96FF91', '#464646', '#E55BB0'];
+
+    let tr2 = document.createElement('tr');
+    let header2 = document.createElement('th');
+    let header3 = document.createElement('th');
+    let header4 = document.createElement('th');
+    let header5 = document.createElement('th');
+    let playerListText = document.createTextNode('Player List');
+    let confirmedText = document.createTextNode('Confirmed');
+    table.appendChild(tr2);
+    tr2.appendChild(header2);
+    tr2.appendChild(header3);
+    tr2.appendChild(header4);
+    tr2.appendChild(header5);
+    header2.appendChild(playerListText);
+    header5.appendChild(confirmedText);
 
     for (let i = 1; i <= 15; i++) {
       let tr = document.createElement('tr');
