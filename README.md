@@ -1,9 +1,13 @@
 #Algorithm
 
 gameRoleList[gameRole] = role list set by the game
+
 playerRoleList[playerRole] = player roles given by user
+
 roleMatches[playerRole] = lists each game role a player role can occupy
+
 containers[container] = lists game role occupancy
+
 
 * Recieve list of game roles / categories
 * Convert categories into roles
