@@ -1,10 +1,5 @@
-gameRoleList[gameRole] = role list set by the game
+Currently being hosted at mafiahelper.com
 
-playerRoleList[playerRole] = player roles given by user
-
-roleMatches[playerRole] = lists each game role a player role can occupy
-
-containers[container] = lists game role occupancy
 
 #Algorithm
 
