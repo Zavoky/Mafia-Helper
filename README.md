@@ -1,4 +1,4 @@
-Currently being hosted at mafiahelper.com
+Currently being hosted at [mafiahelper.com](http://mafiahelper.com/)
 
 
 #Algorithm
