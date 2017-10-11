@@ -1,19 +1,10 @@
-Currently being hosted at [mafiahelper.com](http://mafiahelper.com/)
+# Mafia Helper
+
+A logic solver for the party game [Mafia](https://en.wikipedia.org/wiki/Mafia_(party_game)). Web application hosted [here](https://www.zavoky.com/mafia).
+
+Currently supports the [SC2 Mafia](http://sc2mafia.wikia.com/wiki/StarCraft_II_Mafia_Wiki) variation.
 
 
-#Algorithm
+## Usage
 
-* Recieve list of game roles / categories
-* Convert categories into roles
-* Recieve player role(s) from user
-* Search for role matches between game roles and player role(s), place those matches into an array (roleMatches)
-* While there are matches
-  * While there are containers
-    * If container is open
-      * Occupy the container
-      * Break
-  * While there are containers
-    * If occupier of container has somewhere else to go
-      * Occupier occupies the new container
-      * Occupy the container
-  * All containers are marked for collisions
+Enter the initial game setup. Enter player roles as they become revealed or claimed. When a potential lie occurs, you will be notified.
